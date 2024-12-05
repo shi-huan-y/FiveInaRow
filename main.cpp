@@ -9,16 +9,23 @@ typedef struct {
 } Move;
 //全局变量s
 Move C;
+MOUSEMSG Choose;
 int flag = 0; // 记录黑白出手
 int ChessBox[15][15] = { 0 }; // 记录当前棋盘
 int gameStarted = 0;  // 用来标记游戏是否已经开始
 int grade[15][15] = { 0 };//记录该点分数
 int directs[4][2] = { {1,0}, {1,1}, {0,1}, {-1,1 } };
 int blocked[15][15] = { 0 }; // 标记已堵住的位置，0表示未堵住，1表示已堵住
+//覆盖
+void clearStartButton() {
+    setfillcolor(RGB(239, 228, 176));
+    setlinecolor(RGB(239, 228, 176));
+    fillrectangle(640, 270, 880, 350);  
+}
 // 初始化游戏
 void initGame() {
     // 创建界面
-    initgraph(900, 700, SHOWCONSOLE);
+    initgraph(900, 700);
     // 加载背景图片
     IMAGE img;
     loadimage(&img, "bk.jpg");
@@ -41,8 +48,6 @@ void initGame() {
     outtextxy(680, 500, _T("AI启动"));
 }
 void initGame1() {
-    // 创建界面
-    initgraph(900, 700, SHOWCONSOLE);
     // 加载背景图片
     IMAGE img;
     loadimage(&img, "bk.jpg");
@@ -64,8 +69,6 @@ void initGame1() {
     outtextxy(650, 400, _T("玩家2：白棋"));
 }
 void initGame2() {
-    // 创建界面
-    initgraph(900, 700, SHOWCONSOLE);
     // 加载背景图片
     IMAGE img;
     loadimage(&img, "bk.jpg");
@@ -86,6 +89,90 @@ void initGame2() {
     outtextxy(660, 300, _T("对局已开始"));
     outtextxy(655, 400, _T("入机：白棋"));
 
+}
+void initGame3() {
+    // 加载背景图片
+    IMAGE img;
+    loadimage(&img, "bk.jpg");
+    putimage(0, 0, &img);
+    // 划线
+    setlinestyle(PS_SOLID, 1);
+    setlinecolor(BLACK);
+    for (int i = 1; i < 16; i++) {
+        line(40, i * 40, 600, i * 40);
+        line(i * 40, 40, i * 40, 600);
+    }
+
+    // 插入文字
+    setbkmode(0);
+    settextstyle(30, 0, _T("楷体"));
+    settextcolor(BLACK);
+    outtextxy(650, 200, _T("玩家1：黑棋"));
+    outtextxy(640, 300, _T("玩家1黑棋胜利"));  // 显示启动按钮文字
+    outtextxy(650, 400, _T("玩家2：白棋"));
+}
+void initGame4() {
+    // 加载背景图片
+    IMAGE img;
+    loadimage(&img, "bk.jpg");
+    putimage(0, 0, &img);
+    // 划线
+    setlinestyle(PS_SOLID, 1);
+    setlinecolor(BLACK);
+    for (int i = 1; i < 16; i++) {
+        line(40, i * 40, 600, i * 40);
+        line(i * 40, 40, i * 40, 600);
+    }
+
+    // 插入文字
+    setbkmode(0);
+    settextstyle(30, 0, _T("楷体"));
+    settextcolor(BLACK);
+    outtextxy(650, 200, _T("玩家1：黑棋"));
+    outtextxy(640, 300, _T("玩家2白棋胜利"));  // 显示启动按钮文字
+    outtextxy(650, 400, _T("玩家2：白棋"));
+}
+void initGame5() {
+    // 加载背景图片
+    IMAGE img;
+    loadimage(&img, "bk.jpg");
+    putimage(0, 0, &img);
+    // 划线
+    setlinestyle(PS_SOLID, 1);
+    setlinecolor(BLACK);
+    for (int i = 1; i < 16; i++) {
+        line(40, i * 40, 600, i * 40);
+        line(i * 40, 40, i * 40, 600);
+    }
+
+    // 插入文字
+    setbkmode(0);
+    settextstyle(30, 0, _T("楷体"));
+    settextcolor(BLACK);
+    outtextxy(655, 200, _T("玩家：黑棋"));
+    outtextxy(640, 300, _T("玩家黑棋胜利"));  // 显示启动按钮文字
+    outtextxy(655, 400, _T("入机：白棋"));
+}
+void initGame6() {
+    // 加载背景图片
+    IMAGE img;
+    loadimage(&img, "bk.jpg");
+    putimage(0, 0, &img);
+    // 划线
+    setlinestyle(PS_SOLID, 1);
+    setlinecolor(BLACK);
+    for (int i = 1; i < 16; i++) {
+        line(40, i * 40, 600, i * 40);
+        line(i * 40, 40, i * 40, 600);
+    }
+
+    // 插入文字
+    setbkmode(0);
+    settextstyle(30, 0, _T("楷体"));
+    settextcolor(BLACK);
+    outtextxy(655, 200, _T("玩家：黑棋"));
+    outtextxy(640, 300, _T("入机白棋胜利"));  // 显示启动按钮文字
+    outtextxy(655, 400, _T("入机：白棋"));
 }
 // 输赢判断
 int judge(int MapX, int MapY) {
@@ -131,18 +218,6 @@ void PlayGamerr() {
     while (1) {
         Msg = GetMouseMsg(); // 获取鼠标信息
         if (Msg.uMsg == WM_LBUTTONDOWN) {
-            // 检查是否点击了“VS启动”按钮区域
-            if (Msg.x >= 650 && Msg.x <= 750 && Msg.y >= 280 && Msg.y <= 320 && !gameStarted) {
-                // 点击了“VS启动”按钮，开始游戏
-                gameStarted = 1;
-                cleardevice();
-                initGame1();
-                continue;
-                // 点击后继续等待棋盘点击
-            }
-
-
-
             if (gameStarted) {
                 // 优化鼠标信息，定位在格子上
                 for (int i = 1; i <= 15; i++) { // 优化鼠标信息，定位在格子上
@@ -174,10 +249,12 @@ void PlayGamerr() {
                     // 判断胜利
                     if (judge(MapX, MapY)) {
                         if (flag % 2 == 1) {
-                            MessageBox(NULL, "玩家1黑棋胜利", "游戏结束", MB_OK);
+                            clearStartButton();
+                            outtextxy(640, 300, _T("玩家1黑棋胜利"));
                         }
                         else {
-                            MessageBox(NULL, "玩家2白棋胜利", "游戏结束", MB_OK);
+                            clearStartButton();
+                            outtextxy(640, 300, _T("玩家2白棋胜利"));
                         }
                         break;  // 结束游戏
                     }
@@ -376,22 +453,11 @@ Move getBestMove() {
 void PlayGamerj1() {
     MOUSEMSG Msg;
     int ChessX = 0, ChessY = 0;
-    //int qiX = 0, qiY = 0;
     int MapX = 0, MapY = 0;
     int judgee = 0;
     int over = 0;
     while (1) {
         Msg = GetMouseMsg();
-        if (Msg.uMsg == WM_LBUTTONDOWN) {
-            if (Msg.x >= 650 && Msg.x <= 750 && Msg.y >= 480 && Msg.y <= 520 && !gameStarted) {
-                // 点击了“AI启动”按钮，开始游戏
-                gameStarted = 1;
-                cleardevice();
-                initGame2();
-                continue;
-                // 点击后继续等待棋盘点击
-            }
-        }
         while (flag % 2 == 0 && over == 0 && judgee == 0) {
             if (Msg.uMsg == WM_LBUTTONDOWN) {
                 // 检查是否点击了“VS启动”按钮区域
@@ -441,10 +507,12 @@ void PlayGamerj1() {
             judgee = 0;
             if (judge(MapX, MapY)) {
                 if (flag % 2 == 1) {
-                    MessageBox(NULL, "玩家黑棋胜利", "游戏结束", MB_OK);
+                    clearStartButton();
+                    outtextxy(645, 300, _T("玩家黑棋胜利"));
                 }
                 else {
-                    MessageBox(NULL, "入机白棋胜利", "游戏结束", MB_OK);
+                    clearStartButton();
+                    outtextxy(645, 300, _T("入机白棋胜利"));
                 }
                 over = 1;
                 break;  // 结束游戏
@@ -454,8 +522,28 @@ void PlayGamerj1() {
     }
 }
 int main() {
+    //初始化游戏
     initGame();
-   // PlayGamerr();目前没有选择，所以注释掉了
-    PlayGamerj1();
+    //选择游戏模式
+    while (gameStarted==0) {
+        Choose = GetMouseMsg();
+        if (Choose.uMsg == WM_LBUTTONDOWN) {
+            if (Choose.x >= 650 && Choose.x <= 750 && Choose.y >= 280 && Choose.y <= 320 && !gameStarted) {
+                // 点击了“VS启动”按钮，开始游戏
+                gameStarted = 1;
+                cleardevice();
+                initGame1();
+                PlayGamerr();
+            }
+            if (Choose.x >= 650 && Choose.x <= 750 && Choose.y >= 480 && Choose.y <= 520 && !gameStarted) {
+                // 点击了“AI启动”按钮，开始游戏
+                gameStarted = 1;
+                cleardevice();
+                initGame2();
+                PlayGamerj1();
+            }
+        }
+    }
+    getchar();
     return 0;
 }
